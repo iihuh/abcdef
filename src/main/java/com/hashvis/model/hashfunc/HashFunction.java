@@ -1,25 +1,25 @@
 package com.hashvis.model.hashfunc;
 
 import java.math.BigInteger;
+import com.hashvis.codepane.CodePane;
 
-import com.hashvis.dsl.model.DSLEngine;
+public abstract class HashFunction extends CodePane {
 
-public abstract class HashFunction extends DSLEngine {
-
-  public HashFunction() {
-    super(HashFunctionBuiltin.getGlobalSymbolTable());
-    symbolTable().set("n", BigInteger.ONE);
+  public HashFunction(String code) {
+    super(HashFunctionBuiltin.getGlobalSymbolTable(), code, false);
+    symbolTable.set("n", BigInteger.ONE);
   }
 
   public boolean isValidHashFunction() {
-    return evalErr() == null;
+    return evalException == null;
   }
 
   @Override
-  protected void checkReturnType(Object result) {
-    if (!(result instanceof BigInteger)) {
+  protected void validateResultType(Object obj) {
+    if (!(obj instanceof BigInteger)) {
       throw new RuntimeException("Hash function must return an integer");
     }
+
   }
 
   public abstract int compute(String key, int size);

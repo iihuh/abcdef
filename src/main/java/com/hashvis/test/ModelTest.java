@@ -51,7 +51,6 @@ public class ModelTest {
     this.table = new Table(n);
     this.resolver = resolver;
     for (HashFunction func : resolver.getHashFunctionFields(DataType.STRING)) {
-      func.update("len(s) % n");
     }
     this.in = in;
     loopTable();

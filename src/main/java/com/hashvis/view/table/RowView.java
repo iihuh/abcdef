@@ -2,6 +2,7 @@ package com.hashvis.view.table;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -10,18 +11,27 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.*;
 
+import com.hashvis.model.table.Item;
 import com.hashvis.model.table.Row;
 import com.hashvis.model.table.Row.*;
 
-public class RowView extends JPanel {
+public class RowView extends JPanel implements RowListener {
 
   private AnimatableBorder animBorder = new AnimatableBorder();
 
+  private BorderAnimator animator = new BorderAnimator(300, color -> {
+    this.animBorder.setColor(color);
+    this.repaint(); // Trigger the UI refresh
+  });
+
   private JPanel contentPanel = new JPanel();
+  private ArrayList<Item> items = new ArrayList<Item>();
 
   public RowView(Row row) {
     super();
-    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    row.setListener(this);
+
+    this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
     this.setOpaque(true);
 
     JLabel indexLabel = new JLabel(Integer.toString(row.getIndex()));
@@ -35,6 +45,7 @@ public class RowView extends JPanel {
     this.add(Box.createHorizontalStrut(5));
 
     contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
+    this.add(contentPanel);
 
     // Setup Compound Border:
     // Outer: Our custom animatable border
@@ -47,4 +58,41 @@ public class RowView extends JPanel {
         )));
   }
 
+  @Override
+  public void stateChanged(RowState state) {
+    switch (state) {
+      case SELECTED:
+        animBorder.setColor(Color.BLUE);
+        break;
+      case POSTSELECTED:
+        animBorder.setColor(Color.GREEN);
+        break;
+      case NORMAL:
+        animBorder.setColor(Color.BLACK);
+        break;
+    }
+    repaint();
+  }
+
+  @Override
+  public void itemAdded(Item item) {
+    ItemView itemView = new ItemView(item);
+    items.add(item);
+    contentPanel.add(itemView);
+    revalidate();
+    repaint();
+  }
+
+  @Override
+  public void itemRemoved(Item item) {
+    for (int i = 0; i < contentPanel.getComponentCount(); i++) {
+      if (items.get(i).equals(item)) {
+        contentPanel.remove(i);
+        items.remove(i);
+        revalidate();
+        repaint();
+        break;
+      }
+    }
+  }
 }

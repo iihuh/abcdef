@@ -40,19 +40,21 @@ public class ItemView extends JLabel implements ItemListener {
   public void stateChanged(ItemState state) {
     switch (state) {
       case GHOSTED:
-        animator.animate(animBorder.getColor(), Color.LIGHT_GRAY);
+        // animator.animate(animBorder.getColor(), Color.LIGHT_GRAY);
+        animBorder.setColor(Color.LIGHT_GRAY);
         this.setForeground(Color.LIGHT_GRAY);
         break;
       case NORMAL:
-        animator.animate(animBorder.getColor(), Color.BLACK);
+        animBorder.setColor(Color.BLACK);
         break;
       case SELECTED:
-        animator.animate(animBorder.getColor(), Color.RED);
+        animBorder.setColor(Color.RED);
         break;
       case POSTSELECTED:
-        animator.animate(animBorder.getColor(), Color.YELLOW);
+        animBorder.setColor(Color.ORANGE);
         break;
     }
+    repaint();
   }
 
 }

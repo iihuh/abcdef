@@ -4,8 +4,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hashvis.dsl.parser.SymbolTable;
-import com.hashvis.dsl.parser.func.*;
+import com.hashvis.codepane.parser.SymbolTable;
+import com.hashvis.codepane.parser.func.*;
 
 // Global functions for the interpreter
 public class HashFunctionBuiltin {
