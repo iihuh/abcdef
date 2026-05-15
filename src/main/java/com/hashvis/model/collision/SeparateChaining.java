@@ -6,43 +6,8 @@ import java.util.List;
 import com.hashvis.model.hashfunc.*;
 import com.hashvis.model.table.*;
 
-public class SeparateChaining implements CollisionResolver {
-  HashFunction hashFunc;
-
-  @Override
-  public List<HashFunction> getHashFunctionFields(DataType dataType) {
-    switch (dataType) {
-      case INTEGER:
-        hashFunc = new HashFunctionNumber();
-        break;
-      case STRING:
-        hashFunc = new HashFunctionString();
-        break;
-      default:
-        break;
-    }
-    ArrayList<HashFunction> result = new ArrayList<HashFunction>();
-    result.add(hashFunc);
-    return result;
-  }
-
-  // Collision resolution inital data
-  HashAction action;
-  String key;
-  Table table;
-
-  private ArrayList<String> getPseudocode(HashAction action) {
-    ArrayList<String> pseudocode = new ArrayList<String>();
-    pseudocode.add("TODO: Add pseudocode that reflect actual algorithm well");
-    pseudocode.add("The actual language, syntax, ... will be defined later");
-    return pseudocode;
-  }
-
-  // Algorithm's state machine
-  private Integer hashValue = null;
-  private Row currentRow = null;
+public class SeparateChaining extends ActionProcessor {
   private Item currentItem = null;
-
   @Override
   public boolean useSeparateChaining() {
     return true;
@@ -50,13 +15,8 @@ public class SeparateChaining implements CollisionResolver {
 
   @Override
   public List<String> getAlgorithmAndInitalize(HashAction action, String key, Table table) {
-    this.action = action;
-    this.key = key;
-    this.table = table;
-    // reset the state machine
-    hashValue = null;
-    currentRow = null;
     currentItem = null;
+    initializeActionProcess(action, key, table);
     return getPseudocode(action);
   }
 
@@ -70,11 +30,6 @@ public class SeparateChaining implements CollisionResolver {
   }
 
   // Resolution steps
-  private Result handleHashing() {
-    hashValue = hashFunc.compute(key, table.size());
-    return new Result("Hash value: " + hashValue, 0);
-  }
-
   private Result handleBucketSelection() {
     currentRow = table.getRow(hashValue);
     return new Result("Accessing bucket index " + hashValue, 0);
@@ -98,7 +53,6 @@ public class SeparateChaining implements CollisionResolver {
     currentItem = null; // Reset so next call to handleTraversal calls nextItem()
     return new Result("Checking item: " + itemToHighlight.getName() + " (No match)", 0);
   }
-
   private Result processFoundItem() {
     if (action == HashAction.INSERT) {
       return new Result("Error: Duplicate key " + key, -1);
@@ -109,7 +63,6 @@ public class SeparateChaining implements CollisionResolver {
       return new Result("Found key " + key, -1);
     }
   }
-
   private Result handleFinalization() {
     if (action == HashAction.INSERT) {
       currentRow.addItem(key);

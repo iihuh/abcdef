@@ -1,7 +1,8 @@
 package com.hashvis.model.collision;
 
 import java.util.List;
-import com.hashvis.model.hashfunc.*;
+
+import com.hashvis.model.hashfunc.HashFunction;
 import com.hashvis.model.table.Table;
 
 public interface CollisionResolver {
