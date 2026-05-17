@@ -11,31 +11,44 @@ public class DoubleHashing extends OpenAddressing {
   protected Integer hashValue2 = null;
   protected HashFunction hashFunc1;
   protected HashFunction hashFunc2;
+
   @Override
   public List<HashFunction> getHashFunctionFields(DataType dataType) {
+    HashFunction hf1;
+    HashFunction hf2;
     switch (dataType) {
       case INTEGER:
-        hashFunc1 = new HashFunctionNumber();
-        hashFunc2 = new HashFunctionNumber();
+        hf1 = new HashFunctionNumber();
+        hf2 = new HashFunctionNumber();
         break;
       case STRING:
-        hashFunc1 = new HashFunctionString();
-        hashFunc2 = new HashFunctionString();
+        hf1 = new HashFunctionString();
+        hf2 = new HashFunctionString();
         break;
       default:
         throw new IllegalArgumentException("Unsupported data type: " + dataType);
     }
     ArrayList<HashFunction> result = new ArrayList<HashFunction>();
-    result.add(hashFunc1);
-    result.add(hashFunc2);
+    result.add(hf1);
+    result.add(hf2);
     return result;
   }
+
+  @Override
+  public void setHashFunctionFields(List<HashFunction> hashFunctions) {
+    if (hashFunctions.size() != 2)
+      throw new IllegalArgumentException("Expected 2 hash functions, but got " + hashFunctions.size());
+    hashFunc1 = hashFunctions.get(0);
+    hashFunc2 = hashFunctions.get(1);
+  }
+
   @Override
   public List<String> getAlgorithmAndInitalize(HashAction action, String key, Table table) {
     hashValue1 = null;
     hashValue2 = null;
-    return defaultInitialize(action,key,table);
+    return defaultInitialize(action, key, table);
   }
+
   @Override
   protected Result handleBucketSelection() {
     if (probeCount == table.size())
@@ -44,15 +57,18 @@ public class DoubleHashing extends OpenAddressing {
     probeCount++;
     return new Result("Accessing bucket index " + currentRow.getIndex(), 0);
   }
+
   @Override
   public Result nextStep() {
-    if (hashValue1 == null){
+    if (hashValue1 == null) {
       hashValue1 = hashFunc1.compute(key, table.size());
       return new Result("Hash value: " + hashValue1, 0);
     }
-    if (hashValue2 == null){
+    if (hashValue2 == null) {
       hashValue2 = hashFunc2.compute(key, table.size());
-      if (hashValue2==0){hashValue2=1;}
+      if (hashValue2 == 0) {
+        hashValue2 = 1;
+      }
       return new Result("Hash value: " + hashValue2, 0);
     }
     return loop();

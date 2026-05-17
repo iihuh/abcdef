@@ -25,7 +25,13 @@ public class ControlPanel extends JPanel {
     makeHorizontalFill(btnCreateTable);
     btnCreateTable.addActionListener(e -> controller.onCreateTable());
     makeHorizontalFill(btnRun);
-    btnRun.addActionListener(e -> controller.onRun(HashAction.values()[cbAction.getSelectedIndex()], txtKey.getText()));
+    btnRun.addActionListener(e -> {
+      setInputsEnabled(false);
+      controller.onRun(
+          HashAction.values()[cbAction.getSelectedIndex()],
+          txtKey.getText(),
+          () -> setInputsEnabled(true));
+    });
 
     JPanel inputPanel = new JPanel();
     inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
@@ -46,15 +52,15 @@ public class ControlPanel extends JPanel {
   public Dimension getMaximumSize() {
     return new Dimension(Integer.MAX_VALUE, getPreferredSize().height);
   }
-  //
-  // private void setInputsEnabled(boolean enabled) {
-  // btnCreateTable.setEnabled(enabled);
-  // btnRun.setEnabled(enabled);
-  // cbAction.setEnabled(enabled);
-  // txtKey.setEnabled(enabled);
-  // if (enabled) {
-  // cbAction.setSelectedIndex(cbAction.getSelectedIndex());
-  // btnRun.setEnabled(txtKey.getText().length() > 0);
-  // }
-  // }
+
+  public void setInputsEnabled(boolean enabled) {
+    btnCreateTable.setEnabled(enabled);
+    btnRun.setEnabled(enabled);
+    cbAction.setEnabled(enabled);
+    txtKey.setEnabled(enabled);
+    if (enabled) {
+      cbAction.setSelectedIndex(cbAction.getSelectedIndex());
+      btnRun.setEnabled(txtKey.getText().length() > 0);
+    }
+  }
 }

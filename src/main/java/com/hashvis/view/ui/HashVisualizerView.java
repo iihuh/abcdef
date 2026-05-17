@@ -10,6 +10,7 @@ public class HashVisualizerView extends JPanel {
   private int currentLine = -1;
   private List<JLabel> lineLabels = new ArrayList<>();
   private LinePanel linePanel;
+  private JLabel statusLabel;
 
   private static final int GUTTER_WIDTH = 20;
 
@@ -17,9 +18,17 @@ public class HashVisualizerView extends JPanel {
     super(new BorderLayout());
     setBorder(new EmptyBorder(5, 5, 5, 5));
 
+    JPanel titlePanel = new JPanel();
+    titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
+
     JLabel title = new JLabel("Pseudocode");
     title.setFont(new Font("SansSerif", Font.BOLD, 14));
-    add(title, BorderLayout.NORTH);
+    titlePanel.add(title);
+
+    statusLabel = new JLabel("Status: Waiting...");
+    statusLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
+    titlePanel.add(statusLabel);
+    add(titlePanel, BorderLayout.NORTH);
 
     linePanel = new LinePanel();
     linePanel.setLayout(new BoxLayout(linePanel, BoxLayout.Y_AXIS));
@@ -44,6 +53,10 @@ public class HashVisualizerView extends JPanel {
   public void setCurrentLine(int lineIndex) {
     currentLine = lineIndex;
     linePanel.repaint();
+  }
+
+  public void setStatus(String status) {
+    statusLabel.setText("Status: " + status);
   }
 
   public void clear() {

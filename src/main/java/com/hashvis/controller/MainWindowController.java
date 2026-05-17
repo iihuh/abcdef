@@ -68,7 +68,7 @@ public class MainWindowController {
   }
 
   void showCreatePanel() {
-    CreateControlPanelController createCtrl = new CreateControlPanelController(this);
+    CreateControlPanelController createCtrl = new CreateControlPanelController(this, resolver);
     view.replaceControlPanel(createCtrl.getView());
   }
 }

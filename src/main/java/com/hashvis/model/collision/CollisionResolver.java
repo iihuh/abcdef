@@ -22,9 +22,13 @@ public interface CollisionResolver {
   // Set up Table's view to be each bucket per row instead of warping
   boolean useSeparateChaining();
 
-  // Allocate hash function fields and return them for Views part to show it to
+  // Return required hash function fields and return them for Views part to show
+  // it to
   // user (auto-synced with the model)
   List<HashFunction> getHashFunctionFields(DataType dataType);
+
+  // Set hash function fields
+  void setHashFunctionFields(List<HashFunction> fields);
 
   // Prepare itself for collision resolution visualizing and return some
   // pseudocode

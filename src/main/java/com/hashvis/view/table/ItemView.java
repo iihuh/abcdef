@@ -15,11 +15,6 @@ public class ItemView extends JLabel implements ItemListener {
 
   // private Color currentBorderColor = Color.BLACK;
 
-  private BorderAnimator animator = new BorderAnimator(300, color -> {
-    this.animBorder.setColor(color);
-    this.repaint(); // Trigger the UI refresh
-  });
-
   public ItemView(Item item) {
     super(item.getName());
     this.setOpaque(true);

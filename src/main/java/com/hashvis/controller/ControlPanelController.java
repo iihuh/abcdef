@@ -25,7 +25,7 @@ public class ControlPanelController {
     mainCtrl.showCreatePanel();
   }
 
-  public void onRun(HashAction action, String key) {
+  public void onRun(HashAction action, String key, Runnable callback) {
     CollisionResolver resolver = mainCtrl.getResolver();
     Table table = mainCtrl.getTable();
     HashVisualizerView visView = mainCtrl.getVisView();
@@ -38,8 +38,10 @@ public class ControlPanelController {
     timer.addActionListener(e -> {
       Result r = resolver.nextStep();
       visView.setCurrentLine(r.currentLine());
+      visView.setStatus(r.message());
       if (r.currentLine() == -1)
         timer.stop();
+      callback.run();
     });
     timer.start();
   }

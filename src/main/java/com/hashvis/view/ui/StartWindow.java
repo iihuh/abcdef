@@ -107,6 +107,9 @@ public class StartWindow extends JFrame {
   }
 
   private void confirmQuit() {
-    System.exit(0);
+    int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to quit?", "Confirm Quit",
+        JOptionPane.YES_NO_OPTION);
+    if (result == JOptionPane.YES_OPTION)
+      System.exit(0);
   }
 }

@@ -7,14 +7,16 @@ import com.hashvis.model.hashfunc.*;
 import com.hashvis.model.table.*;
 
 public abstract class OpenAddressing extends ActionProcessor {
-  protected Integer probeCount = 0;      
+  protected Integer probeCount = 0;
   protected Integer availableRow = null;
 
   abstract protected Result handleBucketSelection();
+
   @Override
   public boolean useSeparateChaining() {
     return false;
   }
+
   public List<String> defaultInitialize(HashAction action, String key, Table table) {
     initializeActionProcess(action, key, table);
     probeCount = 0;
@@ -23,11 +25,12 @@ public abstract class OpenAddressing extends ActionProcessor {
   }
 
   @Override
-  public Result nextStep(){
+  public Result nextStep() {
     if (hashValue == null)
       return handleHashing();
     return loop();
   }
+
   public Result loop() {
     if (currentRow == null)
       return handleBucketSelection();
@@ -45,6 +48,7 @@ public abstract class OpenAddressing extends ActionProcessor {
       return processFoundItem(item);
     return new Result("Checking item: " + item.getName() + " (No match)", 0);
   }
+
   protected Result processFoundItem(Item item) {
     if (action == HashAction.INSERT) {
       return new Result("Error: Duplicate key " + key, -1);
@@ -58,10 +62,13 @@ public abstract class OpenAddressing extends ActionProcessor {
 
   protected Result handleFinalization() {
     if (action == HashAction.INSERT) {
-      if (availableRow != null){
+      if (availableRow != null) {
         currentRow = table.getRow(availableRow);
       }
-      if (currentRow.getItems().size() != 0){
+      if (currentRow == null) {
+        return new Result("Error: Table is full", -1);
+      }
+      if (currentRow.getItems().size() != 0) {
         currentRow.removeItem(currentRow.getItems().get(0));
       }
       currentRow.addItem(key);

@@ -52,7 +52,11 @@ public class CreateControlPanel extends JPanel {
     makeHorizontalFill(btnCancel);
     btnCancel.addActionListener(e -> controller.onCancel());
     makeHorizontalFill(btnCreate);
-    btnCreate.addActionListener(e -> controller.onCreate(Integer.parseInt(txtSize.getText())));
+    btnCreate.addActionListener(e -> {
+      if (!checkFunc())
+        return;
+      controller.onCreate(Integer.parseInt(txtSize.getText()), hashFuncs);
+    });
 
     JPanel sizePanel = new JPanel();
     sizePanel.setLayout(new BoxLayout(sizePanel, BoxLayout.X_AXIS));

@@ -1,7 +1,7 @@
 package com.hashvis.model.hashfunc;
 
 import java.math.BigInteger;
-import com.hashvis.codepane.CodePane;
+import com.codepane.CodePane;
 
 public abstract class HashFunction extends CodePane {
 

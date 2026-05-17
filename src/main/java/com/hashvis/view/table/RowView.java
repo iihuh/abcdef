@@ -19,11 +19,6 @@ public class RowView extends JPanel implements RowListener {
 
   private AnimatableBorder animBorder = new AnimatableBorder();
 
-  private BorderAnimator animator = new BorderAnimator(300, color -> {
-    this.animBorder.setColor(color);
-    this.repaint(); // Trigger the UI refresh
-  });
-
   private JPanel contentPanel = new JPanel();
   private ArrayList<Item> items = new ArrayList<Item>();
 
