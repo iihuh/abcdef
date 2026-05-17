@@ -13,7 +13,19 @@
         <javafx.version>21</javafx.version>
     </properties>
 
+    <repositories>
+      <repository>
+        <id>local-libs</id>
+        <url>file://${project.basedir}/libs</url>
+      </repository>
+    </repositories>
+
     <dependencies>
+      <dependency>
+        <groupId>com.codepane</groupId>
+        <artifactId>CodePane</artifactId>
+        <version>1.0</version>
+      </dependency>
     </dependencies>
 
     <build>
