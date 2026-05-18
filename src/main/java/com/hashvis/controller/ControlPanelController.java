@@ -6,6 +6,7 @@ import com.hashvis.model.collision.CollisionResolver.*;
 import com.hashvis.model.table.Table;
 import com.hashvis.view.ui.ControlPanel;
 import com.hashvis.view.ui.HashVisualizerView;
+
 import java.util.List;
 
 public class ControlPanelController {
@@ -36,7 +37,12 @@ public class ControlPanelController {
     table.reset();
     Timer timer = new Timer(500, null);
     timer.addActionListener(e -> {
-      Result r = resolver.nextStep();
+      Result r;
+      try {
+        r = resolver.nextStep();
+      } catch (Exception e1) {
+        r = new Result(e1.getMessage(), -1);
+      }
       visView.setCurrentLine(r.currentLine());
       visView.setStatus(r.message());
       if (r.currentLine() == -1)

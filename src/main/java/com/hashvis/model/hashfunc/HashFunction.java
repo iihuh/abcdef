@@ -6,7 +6,7 @@ import com.codepane.CodePane;
 public abstract class HashFunction extends CodePane {
 
   public HashFunction(String code) {
-    super(HashFunctionBuiltin.getGlobalSymbolTable(), code, false);
+    super(GlobalSymbolTable.getGlobalSymbolTable(), code, false);
     symbolTable.set("n", BigInteger.ONE);
   }
 

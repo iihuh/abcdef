@@ -55,6 +55,8 @@ public class CreateControlPanel extends JPanel {
     btnCreate.addActionListener(e -> {
       if (!checkFunc())
         return;
+      if (txtSize.getText().length() == 0)
+        return;
       controller.onCreate(Integer.parseInt(txtSize.getText()), hashFuncs);
     });
 
