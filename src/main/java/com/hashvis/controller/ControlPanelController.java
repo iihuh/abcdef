@@ -40,7 +40,7 @@ public class ControlPanelController {
       Result r;
       try {
         r = resolver.nextStep();
-      } catch (Exception e1) {
+      } catch (RuntimeException e1) {
         r = new Result(e1.getMessage(), -1);
       }
       visView.setCurrentLine(r.currentLine());

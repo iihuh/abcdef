@@ -9,6 +9,8 @@ public class Table {
   private int currentRow = -1;
 
   public Table(int rows) {
+    if (rows < 1)
+      throw new RuntimeException("Table must have at least one row");
     for (int i = 0; i < rows; i++)
       this.rows.add(new Row(i));
   }

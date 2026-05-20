@@ -18,7 +18,6 @@ import com.hashvis.model.table.Row.*;
 public class RowView extends JPanel implements RowListener {
 
   private JPanel contentPanel = new JPanel();
-  private ArrayList<Item> items = new ArrayList<Item>();
 
   public RowView(Row row) {
     super();
@@ -74,7 +73,6 @@ public class RowView extends JPanel implements RowListener {
   @Override
   public void itemAdded(Item item) {
     ItemView itemView = new ItemView(item);
-    items.add(item);
     contentPanel.add(itemView);
     revalidate();
     repaint();
@@ -83,9 +81,9 @@ public class RowView extends JPanel implements RowListener {
   @Override
   public void itemRemoved(Item item) {
     for (int i = 0; i < contentPanel.getComponentCount(); i++) {
-      if (items.get(i).equals(item)) {
+      ItemView itemView = (ItemView) contentPanel.getComponent(i);
+      if (itemView.getItem() == item) {
         contentPanel.remove(i);
-        items.remove(i);
         revalidate();
         repaint();
         break;

@@ -6,6 +6,8 @@ import com.hashvis.controller.ControlPanelController;
 import com.hashvis.model.collision.CollisionResolver.HashAction;
 
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class ControlPanel extends JPanel {
   private JButton btnCreateTable = new JButton("Create Table");
@@ -31,6 +33,12 @@ public class ControlPanel extends JPanel {
           HashAction.values()[cbAction.getSelectedIndex()],
           txtKey.getText(),
           () -> setInputsEnabled(true));
+    });
+    txtKey.addKeyListener(new KeyAdapter() {
+      @Override
+      public void keyReleased(KeyEvent e) {
+        btnRun.setEnabled(txtKey.getText().length() > 0);
+      }
     });
 
     JPanel inputPanel = new JPanel();
@@ -58,9 +66,7 @@ public class ControlPanel extends JPanel {
     btnRun.setEnabled(enabled);
     cbAction.setEnabled(enabled);
     txtKey.setEnabled(enabled);
-    if (enabled) {
-      cbAction.setSelectedIndex(cbAction.getSelectedIndex());
+    if (enabled)
       btnRun.setEnabled(txtKey.getText().length() > 0);
-    }
   }
 }

@@ -16,7 +16,6 @@ public class CreateControlPanel extends JPanel {
   private JButton btnCancel = new JButton("Cancel");
   private JTextField txtSize = new JTextField(10);
   private JButton btnCreate = new JButton("Create Table");
-  private CollisionResolver resolver;
   private List<HashFunction> hashFuncs = null;
 
   private void makeHorizontalFill(JComponent comp) {
@@ -29,7 +28,6 @@ public class CreateControlPanel extends JPanel {
       DataType dataType,
       CreateControlPanelController controller) {
     super();
-    this.resolver = resolver;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     txtSize = new JTextField(10) {
@@ -42,7 +40,7 @@ public class CreateControlPanel extends JPanel {
         if (Character.isDigit(ev.getKeyChar())) {
           if (txtSize.getText().length() < 4)
             super.processKeyEvent(ev);
-        } else if (ev.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
+        } else if (ev.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
           super.processKeyEvent(ev);
         }
         ev.consume();
@@ -85,11 +83,9 @@ public class CreateControlPanel extends JPanel {
   }
 
   public boolean checkFunc() {
-    for (int i = 0; i < hashFuncs.size(); i++) {
-      if (!hashFuncs.get(i).isValidHashFunction()) {
+    for (int i = 0; i < hashFuncs.size(); i++)
+      if (!hashFuncs.get(i).isValidHashFunction())
         return false;
-      }
-    }
     return true;
   }
 

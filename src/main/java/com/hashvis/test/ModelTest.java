@@ -50,8 +50,6 @@ public class ModelTest {
   public void makeTable(CollisionResolver resolver, int n, Scanner in) {
     this.table = new Table(n);
     this.resolver = resolver;
-    for (HashFunction func : resolver.getHashFunctionFields(DataType.STRING)) {
-    }
     this.in = in;
     loopTable();
   }

@@ -10,12 +10,20 @@ import com.hashvis.model.table.Item;
 import com.hashvis.model.table.Item.*;
 
 public class ItemView extends JLabel implements ItemListener {
+
+  private Item item;
+
   public ItemView(Item item) {
     super(item.getName());
+    this.item = item;
     this.setOpaque(true);
     item.setListener(this);
     this.setHorizontalAlignment(SwingConstants.CENTER);
     setBorderColor(Color.BLACK);
+  }
+
+  public Item getItem() {
+    return item;
   }
 
   private void setBorderColor(Color color) {

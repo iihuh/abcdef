@@ -23,12 +23,10 @@ public class MainWindowController {
     this.onClose = onClose;
     currentTable = new Table(10);
     visView = new HashVisualizerView();
-    // tableView = new TableView(currentTable, resolver.useSeparateChaining());
 
     controlPanelCtrl = new ControlPanelController(this);
     view = new MainWindow(this);
     view.replaceControlPanel(new CreateControlPanelController(this, resolver).getView());
-    // view.setHashTableView(tableView);
     view.setPseudoCodeView(visView);
   }
 
