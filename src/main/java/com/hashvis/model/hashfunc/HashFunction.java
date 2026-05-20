@@ -3,23 +3,24 @@ package com.hashvis.model.hashfunc;
 import java.math.BigInteger;
 import com.codepane.CodePane;
 
-public abstract class HashFunction extends CodePane {
+public abstract class HashFunction {
+  protected CodePane codePane;
 
   public HashFunction(String code) {
-    super(GlobalSymbolTable.getGlobalSymbolTable(), code, false);
-    symbolTable.set("n", BigInteger.ONE);
+    codePane = new CodePane(GlobalSymbolTable.getGlobalSymbolTable(), code, false);
+    codePane.setArgument("n", BigInteger.ONE);
+    codePane.setValidator(obj -> {
+      if (!(obj instanceof BigInteger))
+        throw new RuntimeException("Hash function must return an integer");
+    });
+  }
+
+  public CodePane getView() {
+    return codePane;
   }
 
   public boolean isValidHashFunction() {
-    return evalException == null;
-  }
-
-  @Override
-  protected void validateResultType(Object obj) {
-    if (!(obj instanceof BigInteger)) {
-      throw new RuntimeException("Hash function must return an integer");
-    }
-
+    return codePane.isValid();
   }
 
   public abstract int compute(String key, int size);

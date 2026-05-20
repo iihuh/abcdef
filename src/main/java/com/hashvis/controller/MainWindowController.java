@@ -5,7 +5,7 @@ import com.hashvis.model.collision.CollisionResolver;
 import com.hashvis.model.collision.CollisionResolver.DataType;
 import com.hashvis.model.table.Table;
 import com.hashvis.view.ui.*;
-import com.hashvis.view.table.TableView;
+import com.hashvis.view.table.*;
 
 public class MainWindowController {
   private MainWindow view;
@@ -59,7 +59,10 @@ public class MainWindowController {
 
   public void setTable(Table newTable) {
     currentTable = newTable;
-    tableView = new TableView(currentTable, resolver.useSeparateChaining());
+    if (resolver.useSeparateChaining())
+      tableView = new SeparateChainingTableView(currentTable);
+    else
+      tableView = new OpenAddressingTableView(currentTable);
     view.setHashTableView(tableView);
   }
 

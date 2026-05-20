@@ -17,8 +17,6 @@ import com.hashvis.model.table.Row.*;
 
 public class RowView extends JPanel implements RowListener {
 
-  private AnimatableBorder animBorder = new AnimatableBorder();
-
   private JPanel contentPanel = new JPanel();
   private ArrayList<Item> items = new ArrayList<Item>();
 
@@ -45,10 +43,14 @@ public class RowView extends JPanel implements RowListener {
     // Setup Compound Border:
     // Outer: Our custom animatable border
     // Inner: Padding (equivalent to setPadding in JavaFX)
+    setBorderColor(Color.BLACK);
+  }
+
+  private void setBorderColor(Color color) {
     this.setBorder(new CompoundBorder(
         new EmptyBorder(4, 4, 4, 4), // <--- OUTER MARGIN (The gap between boxes)
         new CompoundBorder(
-            animBorder, // The white box border
+            new LineBorder(color, 4),
             new EmptyBorder(4, 4, 4, 4) // <--- INNER PADDING (Space inside the box)
         )));
   }
@@ -57,13 +59,13 @@ public class RowView extends JPanel implements RowListener {
   public void stateChanged(RowState state) {
     switch (state) {
       case SELECTED:
-        animBorder.setColor(Color.BLUE);
+        setBorderColor(Color.BLUE);
         break;
       case POSTSELECTED:
-        animBorder.setColor(Color.GREEN);
+        setBorderColor(Color.GREEN);
         break;
       case NORMAL:
-        animBorder.setColor(Color.BLACK);
+        setBorderColor(Color.BLACK);
         break;
     }
     repaint();

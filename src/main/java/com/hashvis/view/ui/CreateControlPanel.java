@@ -77,7 +77,7 @@ public class CreateControlPanel extends JPanel {
       hashFuncPanel.setLayout(new BoxLayout(hashFuncPanel, BoxLayout.X_AXIS));
       hashFuncPanel.add(new JLabel("Hash " + (i + 1) + ": "));
       hashFuncPanel.add(Box.createHorizontalStrut(5));
-      hashFuncPanel.add(hashFuncs.get(i));
+      hashFuncPanel.add(hashFuncs.get(i).getView());
       add(hashFuncPanel);
       add(Box.createVerticalStrut(10));
     }

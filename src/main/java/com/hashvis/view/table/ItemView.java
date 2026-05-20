@@ -10,23 +10,19 @@ import com.hashvis.model.table.Item;
 import com.hashvis.model.table.Item.*;
 
 public class ItemView extends JLabel implements ItemListener {
-
-  private AnimatableBorder animBorder = new AnimatableBorder();
-
-  // private Color currentBorderColor = Color.BLACK;
-
   public ItemView(Item item) {
     super(item.getName());
     this.setOpaque(true);
     item.setListener(this);
     this.setHorizontalAlignment(SwingConstants.CENTER);
-    // Setup Compound Border:
-    // Outer: Our custom animatable border
-    // Inner: Padding (equivalent to setPadding in JavaFX)
+    setBorderColor(Color.BLACK);
+  }
+
+  private void setBorderColor(Color color) {
     this.setBorder(new CompoundBorder(
         new EmptyBorder(4, 4, 4, 4), // <--- OUTER MARGIN (The gap between boxes)
         new CompoundBorder(
-            animBorder, // The white box border
+            new LineBorder(color, 4),
             new EmptyBorder(4, 4, 4, 4) // <--- INNER PADDING (Space inside the box)
         )));
   }
@@ -36,17 +32,17 @@ public class ItemView extends JLabel implements ItemListener {
     switch (state) {
       case GHOSTED:
         // animator.animate(animBorder.getColor(), Color.LIGHT_GRAY);
-        animBorder.setColor(Color.LIGHT_GRAY);
+        setBorderColor(Color.LIGHT_GRAY);
         this.setForeground(Color.LIGHT_GRAY);
         break;
       case NORMAL:
-        animBorder.setColor(Color.BLACK);
+        setBorderColor(Color.BLACK);
         break;
       case SELECTED:
-        animBorder.setColor(Color.RED);
+        setBorderColor(Color.RED);
         break;
       case POSTSELECTED:
-        animBorder.setColor(Color.ORANGE);
+        setBorderColor(Color.ORANGE);
         break;
     }
     repaint();

@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.codepane.parser.SymbolTable;
+import com.codepane.SymbolTable;
 import com.codepane.parser.func.*;
 
 // Global functions for the interpreter

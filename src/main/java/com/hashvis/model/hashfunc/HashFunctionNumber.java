@@ -5,7 +5,7 @@ import java.math.BigInteger;
 public class HashFunctionNumber extends HashFunction {
   public HashFunctionNumber() {
     super("k % n");
-    symbolTable.set("k", BigInteger.ZERO);
+    codePane.setArgument("k", BigInteger.ZERO);
   }
 
   @Override
@@ -16,9 +16,9 @@ public class HashFunctionNumber extends HashFunction {
     } catch (NumberFormatException e) {
       throw new RuntimeException("Invalid key: " + key);
     }
-    symbolTable.set("k", k);
-    symbolTable.set("n", BigInteger.valueOf(size));
-    Object result = eval();
+    codePane.setArgument("k", k);
+    codePane.setArgument("n", BigInteger.valueOf(size));
+    Object result = codePane.eval();
     if (!(result instanceof BigInteger))
       throw new RuntimeException("Hash function must return an integer");
     return ((BigInteger) result).mod(BigInteger.valueOf(size)).intValue();
