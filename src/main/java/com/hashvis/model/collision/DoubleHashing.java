@@ -6,10 +6,19 @@ import java.util.List;
 import com.hashvis.model.hashfunc.*;
 import com.hashvis.model.table.Table;
 
+/**
+ * Double hashing collision resolution strategy. Uses two independent hash
+ * functions to compute probe offsets, reducing primary and secondary
+ * clustering. The probe sequence is {@code h1(key) + i * h2(key)}.
+ */
 public class DoubleHashing extends OpenAddressing {
+  /** The result of the first hash function. */
   protected Integer hashValue1 = null;
+  /** The result of the second hash function. */
   protected Integer hashValue2 = null;
+  /** The first hash function. */
   protected HashFunction hashFunc1;
+  /** The second hash function. */
   protected HashFunction hashFunc2;
 
   @Override

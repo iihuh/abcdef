@@ -7,23 +7,50 @@ import java.util.List;
 import com.codepane.SymbolTable;
 import com.codepane.parser.func.*;
 
-// Global functions for the interpreter
+/**
+ * Provides the global symbol table for the interpreter. The table contains
+ * built-in functions (sum, map, filter, reduce, len, range, etc.) and
+ * default hash functions (mixerHash, knuthHash) used by the code pane.
+ */
 public class GlobalSymbolTable {
+  /** Private constructor to prevent instantiation. */
   private GlobalSymbolTable() {
   };
 
+  /** The singleton global symbol table, lazily built at class initialisation. */
   private static SymbolTable symbolTable = buildGlobalSymbolTable();
 
+  /**
+   * Returns the global symbol table containing all built-in functions.
+   *
+   * @return the global {@link SymbolTable} instance
+   */
   public static SymbolTable getGlobalSymbolTable() {
     return symbolTable;
   }
 
-  // Helper functions
+  /**
+   * Asserts that the argument list has at least the given number of elements.
+   *
+   * @param args the argument list to check
+   * @param size the minimum required number of arguments
+   * @throws RuntimeException if the list is too short
+   */
   private static void assertSize(List<Object> args, int size) {
     if (args.size() < size)
       throw new RuntimeException("Not enough arguments");
   }
 
+  /**
+   * Casts an object to {@link BigInteger}, throwing a descriptive exception if
+   * it is not an integer.
+   *
+   * @param obj   the object to cast
+   * @param index the argument index for error messages, or {@code -1} for
+   *              generic input
+   * @return the object as a {@code BigInteger}
+   * @throws RuntimeException if the object is not a {@code BigInteger}
+   */
   private static BigInteger toInteger(Object obj, int index) {
     if (!(obj instanceof BigInteger)) {
       if (index == -1)
@@ -34,6 +61,16 @@ public class GlobalSymbolTable {
     return (BigInteger) obj;
   }
 
+  /**
+   * Casts an object to an {@link ArrayList}, throwing a descriptive exception
+   * if it is not an array.
+   *
+   * @param obj   the object to cast
+   * @param index the argument index for error messages, or {@code -1} for
+   *              generic input
+   * @return the object as an {@code ArrayList}
+   * @throws RuntimeException if the object is not an {@code ArrayList}
+   */
   private static ArrayList<?> toList(Object obj, int index) {
     if (!(obj instanceof ArrayList)) {
       if (index == -1)
@@ -44,6 +81,16 @@ public class GlobalSymbolTable {
     return (ArrayList<?>) obj;
   }
 
+  /**
+   * Casts an object to a {@link Callable}, throwing a descriptive exception
+   * if it is not a function.
+   *
+   * @param obj   the object to cast
+   * @param index the argument index for error messages, or {@code -1} for
+   *              generic input
+   * @return the object as a {@code Callable}
+   * @throws RuntimeException if the object is not a {@code Callable}
+   */
   private static Callable toFunction(Object obj, int index) {
     if (!(obj instanceof Callable)) {
       if (index == -1)
@@ -54,9 +101,14 @@ public class GlobalSymbolTable {
     return (Callable) obj;
   }
 
-  // Built-in functions
+  /** Built-in functions. */
 
-  // Sum: take an array of integers and return the sum
+  /**
+   * Returns the sum of all integers in the given array.
+   *
+   * @param args a single-element list containing the array of integers
+   * @return the sum as a {@code BigInteger}
+   */
   private static Object sum(List<Object> args) {
     BigInteger sum = BigInteger.ZERO;
     assertSize(args, 1);
@@ -67,7 +119,13 @@ public class GlobalSymbolTable {
     return sum;
   }
 
-  // Map: take an array and a function, apply the function to each element
+  /**
+   * Applies a function to each element of an array and returns a new array
+   * containing the results.
+   *
+   * @param args a two-element list containing the array and the function
+   * @return a new {@code ArrayList} of results
+   */
   private static Object map(List<Object> args) {
     assertSize(args, 2);
     ArrayList<?> arg = toList(args.get(0), 1);
@@ -79,13 +137,23 @@ public class GlobalSymbolTable {
     return result;
   }
 
-  // Len: take an array and return the length
+  /**
+   * Returns the length of the given array.
+   *
+   * @param args a single-element list containing the array
+   * @return the length as a {@code BigInteger}
+   */
   private static Object len(List<Object> args) {
     assertSize(args, 1);
     return BigInteger.valueOf(toList(args.get(0), 1).size());
   }
 
-  // Range: take start, end, step and return the range array
+  /**
+   * Generates an array of integers from {@code 0} to {@code end} (inclusive).
+   *
+   * @param args a single-element list containing the end value
+   * @return an {@code ArrayList} of {@code BigInteger} values
+   */
   private static Object range(List<Object> args) {
     assertSize(args, 1);
     BigInteger end = BigInteger.ONE;
@@ -97,14 +165,24 @@ public class GlobalSymbolTable {
     return result;
   }
 
-  // Log2
+  /**
+   * Returns the base-2 logarithm of the given integer (floor).
+   *
+   * @param args a single-element list containing the integer
+   * @return the floor of the base-2 logarithm as a {@code BigInteger}
+   */
   private static Object log2(List<Object> args) {
     assertSize(args, 1);
     return BigInteger.valueOf(toInteger(args.get(0), 1).bitLength() - 1);
   }
 
-  // Filter: take an array and a predicate, return elements satisfying the
-  // predicate
+  /**
+   * Filters an array, returning only the elements that satisfy the given
+   * predicate function.
+   *
+   * @param args a two-element list containing the array and the predicate
+   * @return a new {@code ArrayList} containing matching elements
+   */
   private static Object filter(List<Object> args) {
     assertSize(args, 2);
     ArrayList<?> arg = toList(args.get(0), 1);
@@ -119,7 +197,15 @@ public class GlobalSymbolTable {
     return result;
   }
 
-  // Reduce: take an array and accumulator function, use first element as initial
+  /**
+   * Reduces an array to a single value using an accumulator function. The
+   * first element is used as the initial accumulator value.
+   *
+   * @param args a two-element list containing the array and the accumulator
+   *             function
+   * @return the accumulated result
+   * @throws RuntimeException if the array is empty
+   */
   private static Object reduce(List<Object> args) {
     assertSize(args, 2);
     ArrayList<?> arg = toList(args.get(0), 1);
@@ -133,7 +219,13 @@ public class GlobalSymbolTable {
     return acc;
   }
 
-  // Reverse: take an array and return a reversed copy
+  /**
+   * Returns a new array containing the elements of the input array in reverse
+   * order.
+   *
+   * @param args a single-element list containing the array
+   * @return a reversed copy of the array
+   */
   private static Object reverse(List<Object> args) {
     assertSize(args, 1);
     ArrayList<?> arg = toList(args.get(0), 1);
@@ -144,7 +236,12 @@ public class GlobalSymbolTable {
     return result;
   }
 
-  // Cat: concatenate arrays
+  /**
+   * Concatenates multiple arrays into a single array.
+   *
+   * @param args a list of arrays to concatenate
+   * @return a new {@code ArrayList} containing all elements in order
+   */
   private static Object cat(List<Object> args) {
     ArrayList<Object> result = new ArrayList<Object>();
     for (int i = 0; i < args.size(); i++) {
@@ -156,13 +253,24 @@ public class GlobalSymbolTable {
     return result;
   }
 
-  // Abs: absolute value of an integer
+  /**
+   * Returns the absolute value of an integer.
+   *
+   * @param args a single-element list containing the integer
+   * @return the absolute value as a {@code BigInteger}
+   */
   private static Object abs(List<Object> args) {
     assertSize(args, 1);
     return toInteger(args.get(0), 1).abs();
   }
 
-  // All: check if all elements in an array satisfy a predicate
+  /**
+   * Checks whether all elements in an array satisfy a predicate function.
+   *
+   * @param args a two-element list containing the array and the predicate
+   * @return {@code BigInteger.ONE} if all elements satisfy the predicate,
+   *         {@code BigInteger.ZERO} otherwise
+   */
   private static Object all(List<Object> args) {
     assertSize(args, 2);
     ArrayList<?> arg = toList(args.get(0), 1);
@@ -175,7 +283,13 @@ public class GlobalSymbolTable {
     return BigInteger.ONE;
   }
 
-  // Any: check if any element in an array satisfies a predicate
+  /**
+   * Checks whether any element in an array satisfies a predicate function.
+   *
+   * @param args a two-element list containing the array and the predicate
+   * @return {@code BigInteger.ONE} if any element satisfies the predicate,
+   *         {@code BigInteger.ZERO} otherwise
+   */
   private static Object any(List<Object> args) {
     assertSize(args, 2);
     ArrayList<?> arg = toList(args.get(0), 1);
@@ -188,7 +302,14 @@ public class GlobalSymbolTable {
     return BigInteger.ZERO;
   }
 
-  // Default hash functions
+  /** Default hash functions. */
+
+  /**
+   * Applies the mixer hash algorithm (xor-shift-multiply) to an integer.
+   *
+   * @param args a single-element list containing the integer to hash
+   * @return the mixed hash value as a {@code BigInteger}
+   */
   private static Object mixerHash(List<Object> args) {
     assertSize(args, 1);
     BigInteger inp = toInteger(args.get(0), 1);
@@ -198,6 +319,12 @@ public class GlobalSymbolTable {
     return inp;
   }
 
+  /**
+   * Applies the Knuth multiplicative hash algorithm to an integer.
+   *
+   * @param args a single-element list containing the integer to hash
+   * @return the Knuth hash value as a {@code BigInteger}
+   */
   private static Object knuthHash(List<Object> args) {
     assertSize(args, 1);
     BigInteger inp = toInteger(args.get(0), 1);
@@ -213,6 +340,12 @@ public class GlobalSymbolTable {
     return inp;
   }
 
+  /**
+   * Builds and populates the global symbol table with all built-in and default
+   * hash functions.
+   *
+   * @return the populated {@link SymbolTable}
+   */
   private static SymbolTable buildGlobalSymbolTable() {
     SymbolTable symbolTable = new SymbolTable();
     symbolTable.set("sum", new BuiltinFunction(GlobalSymbolTable::sum, "(a): Sum of a"));
