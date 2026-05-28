@@ -16,7 +16,7 @@ public abstract class HashFunction {
   }
 
   public CodePane getView() {
-    return codePane;
+    return codePane.initViewPart();
   }
 
   public boolean isValidHashFunction() {
