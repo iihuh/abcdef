@@ -1,46 +1,36 @@
 package com.hashvis.model.collision;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.hashvis.model.hashfunc.*;
-import com.hashvis.model.table.Table;
+import com.hashvis.model.hashfunc.HashFunction;
+import com.hashvis.model.hashfunc.HashFunctionNumber;
+import com.hashvis.model.hashfunc.HashFunctionString;
 
-/**
- * Double hashing collision resolution strategy. Uses two independent hash
- * functions to compute probe offsets, reducing primary and secondary
- * clustering. The probe sequence is {@code h1(key) + i * h2(key)}.
- */
 public class DoubleHashing extends OpenAddressing {
-  /** The result of the first hash function. */
-  protected Integer hashValue1 = null;
-  /** The result of the second hash function. */
-  protected Integer hashValue2 = null;
-  /** The first hash function. */
-  protected HashFunction hashFunc1;
-  /** The second hash function. */
-  protected HashFunction hashFunc2;
-
+  private Integer hashValue1 = null;
+  private Integer hashValue2 = null;
+  private HashFunction hashFunc1;
+  private HashFunction hashFunc2;
+  @Override
+  protected String getcurrent_ResolverType(){
+    return "(base + step) % size of HT";
+  }
   @Override
   public List<HashFunction> getHashFunctionFields(DataType dataType) {
     HashFunction hf1;
     HashFunction hf2;
     switch (dataType) {
-      case INTEGER:
+      case INTEGER -> {
         hf1 = new HashFunctionNumber();
         hf2 = new HashFunctionNumber();
-        break;
-      case STRING:
+      }
+      case STRING -> {
         hf1 = new HashFunctionString();
         hf2 = new HashFunctionString();
-        break;
-      default:
-        throw new IllegalArgumentException("Unsupported data type: " + dataType);
+      }
+      default -> throw new IllegalArgumentException("Unsupported data type: " + dataType);
     }
-    ArrayList<HashFunction> result = new ArrayList<HashFunction>();
-    result.add(hf1);
-    result.add(hf2);
-    return result;
+    return List.of(hf1, hf2);
   }
 
   @Override
@@ -52,23 +42,19 @@ public class DoubleHashing extends OpenAddressing {
   }
 
   @Override
-  public List<String> getAlgorithmAndInitalize(HashAction action, String key, Table table) {
+  protected void uniqueInitalize(HashAction action) {
+    super.uniqueInitalize(action);
     hashValue1 = null;
     hashValue2 = null;
-    return defaultInitialize(action, key, table);
   }
 
   @Override
-  protected Result handleBucketSelection() {
-    if (probeCount == table.size())
-      return handleFinalization();
-    currentRow = table.getRow((hashValue1 + probeCount * hashValue2) % table.size());
-    probeCount++;
-    return new Result("Accessing bucket index " + currentRow.getIndex(), 0);
+  protected int handleBucketSelection(int probeCount) {
+    return probeCount*hashValue2;
   }
 
   @Override
-  public Result nextStep() {
+  public Result firstStep() {
     if (hashValue1 == null) {
       hashValue1 = hashFunc1.compute(key, table.size());
       return new Result("Hash value: " + hashValue1, 0);
@@ -80,6 +66,6 @@ public class DoubleHashing extends OpenAddressing {
       }
       return new Result("Hash value: " + hashValue2, 0);
     }
-    return loop();
+    return null;
   }
 }

@@ -1,32 +1,27 @@
 package com.hashvis.model.collision;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.hashvis.model.hashfunc.*;
-import com.hashvis.model.table.*;
+import com.hashvis.model.hashfunc.HashFunction;
+import com.hashvis.model.table.Item;
 
-/**
- * Separate chaining collision resolution strategy. Each bucket in the hash
- * table holds a chain of items; collisions are resolved by appending to the
- * chain at the computed bucket index.
- */
 public class SeparateChaining extends ActionProcessor {
-  /** The current item being examined during chain traversal. */
   private Item currentItem = null;
-
+  private HashFunction hashFunc;
+  private HashAction action;
   @Override
   public boolean useSeparateChaining() {
     return true;
   }
-
   @Override
-  public List<String> getAlgorithmAndInitalize(HashAction action, String key, Table table) {
-    currentItem = null;
-    initializeActionProcess(action, key, table);
-    return getPseudocode(action);
+  protected String getcurrent_ResolverType(){
+    return "(base + step) % size of HT";
   }
-
+  @Override
+  protected void uniqueInitalize(HashAction action){
+    this.action=action;
+    currentItem = null;
+  }
   @Override
   public Result nextStep() {
     if (hashValue == null)
@@ -36,23 +31,14 @@ public class SeparateChaining extends ActionProcessor {
     return handleTraversal();
   }
 
-  /**
-   * Selects the bucket at the computed hash index.
-   *
-   * @return the result of the bucket selection step
-   */
+  // Resolution steps
   private Result handleBucketSelection() {
     currentRow = table.getRow(hashValue);
     return new Result("Accessing bucket index " + hashValue, 0);
   }
 
-  /**
-   * Traverses the chain of items in the current bucket, checking each item
-   * for a match and reporting the result.
-   *
-   * @return the result of the traversal step
-   */
   private Result handleTraversal() {
+    // If we don't have an item yet, or we just finished one, get the next
     if (currentItem == null)
       currentItem = currentRow.nextItem();
 
@@ -60,20 +46,15 @@ public class SeparateChaining extends ActionProcessor {
       return handleFinalization();
     }
 
+    // Check if this is the item we are looking for
     if (currentItem.getName().equals(key))
       return processFoundItem();
 
+    // Otherwise, prepare to move to the next item in the next call
     Item itemToHighlight = currentItem;
-    currentItem = null;
+    currentItem = null; // Reset so next call to handleTraversal calls nextItem()
     return new Result("Checking item: " + itemToHighlight.getName() + " (No match)", 0);
   }
-
-  /**
-   * Processes a found item based on the current action: signals an error on
-   * insert, removes on delete, or reports the key on search.
-   *
-   * @return the result of processing the found item
-   */
   private Result processFoundItem() {
     if (action == HashAction.INSERT) {
       return new Result("Error: Duplicate key " + key, -1);
@@ -84,18 +65,19 @@ public class SeparateChaining extends ActionProcessor {
       return new Result("Found key " + key, -1);
     }
   }
-
-  /**
-   * Finalizes the operation. On insert, appends the key to the current
-   * bucket's chain. On other actions, reports that the key was not found.
-   *
-   * @return the result of the finalization step
-   */
   private Result handleFinalization() {
     if (action == HashAction.INSERT) {
       currentRow.addItem(key);
       return new Result("Key not found. Inserted " + key + " into bucket " + hashValue, -1);
     }
     return new Result("Error: Key " + key + " not found in table", -1);
+  }
+  protected Result handleHashing() {
+  	hashValue = hashFunc.compute(key, table.size());
+  	return new Result("Hash value: " + hashValue, 1);
+  }
+  @Override
+  public void setHashFunctionFields(List<HashFunction> hashFunctions) {
+    hashFunc = hashFunctions.get(0);
   }
 }
