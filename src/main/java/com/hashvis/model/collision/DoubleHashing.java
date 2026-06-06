@@ -11,10 +11,12 @@ public class DoubleHashing extends OpenAddressing {
   private Integer hashValue2 = null;
   private HashFunction hashFunc1;
   private HashFunction hashFunc2;
+
   @Override
-  protected String getcurrent_ResolverType(){
+  protected String getcurrent_ResolverType() {
     return "(base + step) % size of HT";
   }
+
   @Override
   public List<HashFunction> getHashFunctionFields(DataType dataType) {
     HashFunction hf1;
@@ -49,8 +51,8 @@ public class DoubleHashing extends OpenAddressing {
   }
 
   @Override
-  protected int handleBucketSelection(int probeCount) {
-    return probeCount*hashValue2;
+  protected int getBucketSelection(int probeCount) {
+    return hashValue1 + probeCount * hashValue2;
   }
 
   @Override
